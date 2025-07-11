@@ -1,7 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:file_picker/file_picker.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'firebase_options.dart'; // 이 파일이 반드시 있어야 함
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // config가 여기 필요
+  );
+  runApp(MyApp());
+}
+
+class UploadPage extends StatefulWidget {
+  @override
+  _UploadPageState createState() => _UploadPageState();
+}
+
+class _UploadPageState extends State<UploadPage> {
+  final TextEditingController _textController = TextEditingController();
+  FilePickerResult? _image;
+
+  Future<void> _pickImage() async {
+    _image = await FilePicker.platform.pickFiles(type: FileType.image);
+    setState(() {});
+  }
+
+  Future<void> _upload() async {
+    if (_image == null || _textController.text.isEmpty) return;
+
+    // 파일 Firebase Storage에 업로드
+    final fileBytes = _image!.files.first.bytes!;
+    final fileName = _image!.files.first.name;
+
+    final ref = FirebaseStorage.instance.ref('uploads/$fileName');
+    await ref.putData(fileBytes);
+    final imageUrl = await ref.getDownloadURL();
+
+    // Firestore에 글 + 이미지 URL 저장
+    await FirebaseFirestore.instance.collection('posts').add({
+      'text': _textController.text,
+      'imageUrl': imageUrl,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("업로드 완료")));
+    _textController.clear();
+    _image = null;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('글 + 사진 업로드')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(controller: _textController, decoration: InputDecoration(labelText: '내용 입력')),
+            SizedBox(height: 8),
+            _image != null
+                ? Image.memory(_image!.files.first.bytes!, height: 200)
+                : TextButton(onPressed: _pickImage, child: Text("사진 선택")),
+            SizedBox(height: 16),
+            ElevatedButton(onPressed: _upload, child: Text("업로드")),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

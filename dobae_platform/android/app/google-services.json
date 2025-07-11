@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994293928667",
+    "project_id": "dobae-platform",
+    "storage_bucket": "dobae-platform.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994293928667:android:d68094a8fa98f8635ff2fe",
+        "android_client_info": {
+          "package_name": "com.example.dobae_platform"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsCdEZcZ1NnKimCyDkQEVjTmTxqTHsmmk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
