@@ -9,9 +9,9 @@ import 'firebase_options.dart'; // 이 파일이 반드시 있어야 함
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // config가 여기 필요
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class UploadPage extends StatefulWidget {
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Dobae Platform',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: UploadPage(), // UploadPage로 변경
     );
   }
 }
